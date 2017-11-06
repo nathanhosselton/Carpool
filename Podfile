@@ -8,5 +8,8 @@ target 'Carpool' do
 
   # Pods for Carpool
   pod 'CarpoolKit', :git => 'https://github.com/codebasesav/CarpoolKit.git', :branch => 'master'
+  pod 'Firebase'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Database'
 
 end
