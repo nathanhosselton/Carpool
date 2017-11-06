@@ -7,25 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D8AF81E1FB0F12E00D5ACA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF81D1FB0F12E00D5ACA9 /* AppDelegate.swift */; };
-		0D8AF8201FB0F12E00D5ACA9 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF81F1FB0F12E00D5ACA9 /* RootViewController.swift */; };
-		0D8AF8231FB0F12E00D5ACA9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8211FB0F12E00D5ACA9 /* Main.storyboard */; };
-		0D8AF8251FB0F12E00D5ACA9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8241FB0F12E00D5ACA9 /* Assets.xcassets */; };
-		0D8AF8281FB0F12E00D5ACA9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8261FB0F12E00D5ACA9 /* LaunchScreen.storyboard */; };
+		0D8AF8321FB0F46800D5ACA9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8311FB0F46800D5ACA9 /* Info.plist */; };
+		0D8AF8341FB0F47900D5ACA9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */; };
+		0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8371FB0F4A500D5ACA9 /* AppDelegate.swift */; };
+		0D8AF83A1FB0F4A600D5ACA9 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8381FB0F4A500D5ACA9 /* ScheduleViewController.swift */; };
+		0D8AF83C1FB0F57A00D5ACA9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF83B1FB0F57A00D5ACA9 /* Assets.xcassets */; };
 		12D4467C7E3F56476861EEA7 /* Pods_Carpool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54F9F3DCFF03C3873FC02AA6 /* Pods_Carpool.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0D8AF81A1FB0F12E00D5ACA9 /* Carpool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Carpool.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		0D8AF81D1FB0F12E00D5ACA9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0D8AF81F1FB0F12E00D5ACA9 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		0D8AF8221FB0F12E00D5ACA9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		0D8AF8241FB0F12E00D5ACA9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		0D8AF8271FB0F12E00D5ACA9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		0D8AF8291FB0F12E00D5ACA9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0D8AF8311FB0F46800D5ACA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../Info.plist; sourceTree = "<group>"; };
+		0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ../../IB/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		0D8AF8371FB0F4A500D5ACA9 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = ../Sources/AppDelegate.swift; sourceTree = "<group>"; wrapsLines = 0; };
+		0D8AF8381FB0F4A500D5ACA9 /* ScheduleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScheduleViewController.swift; path = ../Sources/ScheduleViewController.swift; sourceTree = "<group>"; };
+		0D8AF83B1FB0F57A00D5ACA9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../Assets.xcassets; sourceTree = "<group>"; };
 		54F9F3DCFF03C3873FC02AA6 /* Pods_Carpool.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Carpool.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		62A98556D73EA3F69F485549 /* Pods-Carpool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carpool.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Carpool/Pods-Carpool.debug.xcconfig"; sourceTree = "<group>"; };
-		B9A0180EF47BFC8A9EE1C256 /* Pods-Carpool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carpool.release.xcconfig"; path = "Pods/Target Support Files/Pods-Carpool/Pods-Carpool.release.xcconfig"; sourceTree = "<group>"; };
+		62A98556D73EA3F69F485549 /* Pods-Carpool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carpool.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Carpool/Pods-Carpool.debug.xcconfig"; sourceTree = "<group>"; };
+		B9A0180EF47BFC8A9EE1C256 /* Pods-Carpool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carpool.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Carpool/Pods-Carpool.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +51,10 @@
 		0D8AF8111FB0F12E00D5ACA9 = {
 			isa = PBXGroup;
 			children = (
-				0D8AF81C1FB0F12E00D5ACA9 /* Carpool */,
+				0D8AF8371FB0F4A500D5ACA9 /* AppDelegate.swift */,
+				0D8AF8381FB0F4A500D5ACA9 /* ScheduleViewController.swift */,
+				0D8AF83B1FB0F57A00D5ACA9 /* Assets.xcassets */,
+				0D8AF8301FB0F45C00D5ACA9 /* … */,
 				0D8AF81B1FB0F12E00D5ACA9 /* Products */,
 				092F307AA594AD51D0EDD7FA /* Pods */,
 				E868C05A4387547674336FD5 /* Frameworks */,
@@ -67,17 +69,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		0D8AF81C1FB0F12E00D5ACA9 /* Carpool */ = {
+		0D8AF8301FB0F45C00D5ACA9 /* … */ = {
 			isa = PBXGroup;
 			children = (
-				0D8AF81D1FB0F12E00D5ACA9 /* AppDelegate.swift */,
-				0D8AF81F1FB0F12E00D5ACA9 /* RootViewController.swift */,
-				0D8AF8211FB0F12E00D5ACA9 /* Main.storyboard */,
-				0D8AF8241FB0F12E00D5ACA9 /* Assets.xcassets */,
-				0D8AF8261FB0F12E00D5ACA9 /* LaunchScreen.storyboard */,
-				0D8AF8291FB0F12E00D5ACA9 /* Info.plist */,
+				0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */,
+				0D8AF8311FB0F46800D5ACA9 /* Info.plist */,
 			);
-			path = Carpool;
+			path = "…";
 			sourceTree = "<group>";
 		};
 		E868C05A4387547674336FD5 /* Frameworks */ = {
@@ -123,6 +121,7 @@
 				TargetAttributes = {
 					0D8AF8191FB0F12E00D5ACA9 = {
 						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -150,9 +149,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D8AF8281FB0F12E00D5ACA9 /* LaunchScreen.storyboard in Resources */,
-				0D8AF8251FB0F12E00D5ACA9 /* Assets.xcassets in Resources */,
-				0D8AF8231FB0F12E00D5ACA9 /* Main.storyboard in Resources */,
+				0D8AF8321FB0F46800D5ACA9 /* Info.plist in Resources */,
+				0D8AF83C1FB0F57A00D5ACA9 /* Assets.xcassets in Resources */,
+				0D8AF8341FB0F47900D5ACA9 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,7 +164,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Carpool/Pods-Carpool-frameworks.sh",
+				"${SRCROOT}/../Pods/Target Support Files/Pods-Carpool/Pods-Carpool-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CarpoolKit/CarpoolKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -174,7 +173,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Carpool/Pods-Carpool-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Carpool/Pods-Carpool-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8DF471192D3BBCE2C5011356 /* [CP] Copy Pods Resources */ = {
@@ -189,7 +188,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Carpool/Pods-Carpool-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Carpool/Pods-Carpool-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A1564A65913F82057EA9F6ED /* [CP] Check Pods Manifest.lock */ = {
@@ -217,31 +216,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D8AF8201FB0F12E00D5ACA9 /* RootViewController.swift in Sources */,
-				0D8AF81E1FB0F12E00D5ACA9 /* AppDelegate.swift in Sources */,
+				0D8AF83A1FB0F4A600D5ACA9 /* ScheduleViewController.swift in Sources */,
+				0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		0D8AF8211FB0F12E00D5ACA9 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0D8AF8221FB0F12E00D5ACA9 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		0D8AF8261FB0F12E00D5ACA9 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0D8AF8271FB0F12E00D5ACA9 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0D8AF82A1FB0F12E00D5ACA9 /* Debug */ = {
@@ -356,12 +336,14 @@
 			baseConfigurationReference = 62A98556D73EA3F69F485549 /* Pods-Carpool.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GTZ6E2N5Z9;
-				INFOPLIST_FILE = Carpool/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/../Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.nathanhosselton.Carpool;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -372,9 +354,10 @@
 			baseConfigurationReference = B9A0180EF47BFC8A9EE1C256 /* Pods-Carpool.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GTZ6E2N5Z9;
-				INFOPLIST_FILE = Carpool/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/../Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.nathanhosselton.Carpool;
 				PRODUCT_NAME = "$(TARGET_NAME)";

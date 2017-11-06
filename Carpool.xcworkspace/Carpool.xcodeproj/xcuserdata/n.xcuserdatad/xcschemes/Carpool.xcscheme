@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4270CF726AF7441ABD427723DE5D4976"
-               BuildableName = "CarpoolKit.framework"
-               BlueprintName = "CarpoolKit"
-               ReferencedContainer = "container:Pods.xcodeproj">
+               BlueprintIdentifier = "0D8AF8191FB0F12E00D5ACA9"
+               BuildableName = "Carpool.app"
+               BlueprintName = "Carpool"
+               ReferencedContainer = "container:Carpool.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -30,6 +30,15 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0D8AF8191FB0F12E00D5ACA9"
+            BuildableName = "Carpool.app"
+            BlueprintName = "Carpool"
+            ReferencedContainer = "container:Carpool.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -44,15 +53,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4270CF726AF7441ABD427723DE5D4976"
-            BuildableName = "CarpoolKit.framework"
-            BlueprintName = "CarpoolKit"
-            ReferencedContainer = "container:Pods.xcodeproj">
+            BlueprintIdentifier = "0D8AF8191FB0F12E00D5ACA9"
+            BuildableName = "Carpool.app"
+            BlueprintName = "Carpool"
+            ReferencedContainer = "container:Carpool.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -62,6 +72,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "0D8AF8191FB0F12E00D5ACA9"
+            BuildableName = "Carpool.app"
+            BlueprintName = "Carpool"
+            ReferencedContainer = "container:Carpool.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
