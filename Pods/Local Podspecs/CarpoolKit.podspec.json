@@ -1,0 +1,25 @@
+{
+  "name": "CarpoolKit",
+  "version": "0.0.1",
+  "summary": "Foo",
+  "description": "CarpoolKit",
+  "homepage": "https://github.com/codebasesav/CarpoolKit",
+  "license": "MIT",
+  "authors": {
+    "codebasesav": "email@address.com"
+  },
+  "source": {
+    "git": "https://github.com/codebasesav/CarpoolKit.git",
+    "commit": "834004f008bd1eeef99eeaacdf9b88bac910158c"
+  },
+  "source_files": [
+    "CarpoolKit",
+    "CarpoolKit/*.swift"
+  ],
+  "platforms": {
+    "osx": null,
+    "ios": null,
+    "tvos": null,
+    "watchos": null
+  }
+}
