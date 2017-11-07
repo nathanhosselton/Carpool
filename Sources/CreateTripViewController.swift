@@ -1,6 +1,19 @@
 import UIKit
+import CoreLocation.CLLocation
+import CarpoolKit
 
 private let margin = 8.f
+
+private enum CreateTripError: UserError {
+    case invalidTrip
+
+    var description: String {
+        switch self {
+        case .invalidTrip:
+            return "All fields must be filled in before you can create the trip."
+        }
+    }
+}
 
 final class CreateTripViewController: UIViewController {
     let eventDescription = UITextField(.byhand, placeholder: "Enter a description for this trip")
@@ -35,7 +48,11 @@ final class CreateTripViewController: UIViewController {
     }
 
     @objc func onConfirm() {
-        //TODO:
+        guard let desc = eventDescription.text, desc != "" else { return show(CreateTripError.invalidTrip) }
+        
+        API.createTrip(eventDescription: desc, eventTime: eventDatePicker.date, eventLocation: CLLocation()) { (newTrip) in
+            print(newTrip)
+        }
     }
 
 }

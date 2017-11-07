@@ -16,13 +16,15 @@ extension Event {
     }
 }
 
-extension User {
-    var prettyPhone: String {
-        return String(phone).map{ String($0) }.reduce(into: "", { (result, digit) in
-            struct Counter { static var cc = 1 }
-            var needsDash: Bool { return Counter.cc % 3 == 0 && Counter.cc < 7 }
-            result += needsDash ? "\(digit)-" : digit
-            Counter.cc += 1
-        })
-    }
-}
+//`phone` removed for now
+//extension User {
+//    var prettyPhone: String {
+//        return String(phone).map{ String($0) }.reduce(into: "", { (result, digit) in
+//            struct Counter { static var cc = 1 }
+//            var needsDash: Bool { return Counter.cc % 3 == 0 && Counter.cc < 7 }
+//            result += needsDash ? "\(digit)-" : digit
+//            Counter.cc += 1
+//        })
+//    }
+//}
+

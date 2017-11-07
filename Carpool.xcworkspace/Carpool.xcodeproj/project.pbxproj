@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0D0D6B781FB20DF200A22A88 /* HandLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D6B771FB20DF200A22A88 /* HandLayout.swift */; };
 		0D4F69621FB2179F00960CA4 /* CreateTripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */; };
+		0D4F69641FB2668F00960CA4 /* UserError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4F69631FB2668F00960CA4 /* UserError.swift */; };
 		0D8AF8341FB0F47900D5ACA9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */; };
 		0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8371FB0F4A500D5ACA9 /* AppDelegate.swift */; };
 		0D8AF83A1FB0F4A600D5ACA9 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8381FB0F4A500D5ACA9 /* ScheduleViewController.swift */; };
@@ -21,8 +22,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0D0D6B771FB20DF200A22A88 /* HandLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandLayout.swift; sourceTree = "<group>"; };
-		0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTripViewController.swift; sourceTree = "<group>"; };
+		0D0D6B771FB20DF200A22A88 /* HandLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HandLayout.swift; path = ../Sources/HandLayout.swift; sourceTree = "<group>"; };
+		0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CreateTripViewController.swift; path = ../Sources/CreateTripViewController.swift; sourceTree = "<group>"; };
+		0D4F69631FB2668F00960CA4 /* UserError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserError.swift; path = ../Sources/UserError.swift; sourceTree = "<group>"; };
 		0D8AF81A1FB0F12E00D5ACA9 /* Carpool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Carpool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D8AF8311FB0F46800D5ACA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../Info.plist; sourceTree = "<group>"; };
 		0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ../../IB/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -32,7 +34,7 @@
 		0D8AF83D1FB0FE9600D5ACA9 /* etc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = etc.swift; path = ../Sources/etc.swift; sourceTree = "<group>"; };
 		0D8AF8411FB10EEB00D5ACA9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0D8AF8431FB1137600D5ACA9 /* TripDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TripDetailViewController.swift; path = ../Sources/TripDetailViewController.swift; sourceTree = "<group>"; };
-		0DE42CD61FB155B300F77FD8 /* ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ext.swift; sourceTree = "<group>"; };
+		0DE42CD61FB155B300F77FD8 /* ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ext.swift; path = ../Sources/ext.swift; sourceTree = "<group>"; };
 		54F9F3DCFF03C3873FC02AA6 /* Pods_Carpool.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Carpool.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		62A98556D73EA3F69F485549 /* Pods-Carpool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carpool.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Carpool/Pods-Carpool.debug.xcconfig"; sourceTree = "<group>"; };
 		B9A0180EF47BFC8A9EE1C256 /* Pods-Carpool.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carpool.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Carpool/Pods-Carpool.release.xcconfig"; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 				0D8AF8431FB1137600D5ACA9 /* TripDetailViewController.swift */,
 				0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */,
 				0DE42CD61FB155B300F77FD8 /* ext.swift */,
+				0D4F69631FB2668F00960CA4 /* UserError.swift */,
 				0D0D6B791FB211E900A22A88 /* UI */,
 				0D8AF83B1FB0F57A00D5ACA9 /* Assets.xcassets */,
 				0D8AF8301FB0F45C00D5ACA9 /* … */,
@@ -174,7 +177,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D8AF8321FB0F46800D5ACA9 /* Info.plist in Resources */,
 				0D8AF8421FB10EEB00D5ACA9 /* GoogleService-Info.plist in Resources */,
 				0D8AF83C1FB0F57A00D5ACA9 /* Assets.xcassets in Resources */,
 				0D8AF8341FB0F47900D5ACA9 /* LaunchScreen.storyboard in Resources */,
@@ -255,6 +257,7 @@
 				0D8AF83A1FB0F4A600D5ACA9 /* ScheduleViewController.swift in Sources */,
 				0D4F69621FB2179F00960CA4 /* CreateTripViewController.swift in Sources */,
 				0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */,
+				0D4F69641FB2668F00960CA4 /* UserError.swift in Sources */,
 				0D0D6B781FB20DF200A22A88 /* HandLayout.swift in Sources */,
 				0DE42CD71FB155B300F77FD8 /* ext.swift in Sources */,
 				0D8AF8441FB1137600D5ACA9 /* TripDetailViewController.swift in Sources */,
