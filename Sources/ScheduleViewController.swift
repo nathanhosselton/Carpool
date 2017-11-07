@@ -10,9 +10,14 @@ final class ScheduleViewController: UITableViewController {
         super.viewDidLoad()
 
         self.title = "Schedule"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAdd))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "a")
 
         go()
+    }
+
+    @objc func onAdd() {
+        navigationController?.pushViewController(CreateTripViewController(), animated: true)
     }
 
     private func go() {

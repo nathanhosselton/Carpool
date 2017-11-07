@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D0D6B781FB20DF200A22A88 /* HandLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D6B771FB20DF200A22A88 /* HandLayout.swift */; };
+		0D4F69621FB2179F00960CA4 /* CreateTripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */; };
 		0D8AF8321FB0F46800D5ACA9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8311FB0F46800D5ACA9 /* Info.plist */; };
 		0D8AF8341FB0F47900D5ACA9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */; };
 		0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8371FB0F4A500D5ACA9 /* AppDelegate.swift */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		0D0D6B771FB20DF200A22A88 /* HandLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandLayout.swift; sourceTree = "<group>"; };
+		0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTripViewController.swift; sourceTree = "<group>"; };
 		0D8AF81A1FB0F12E00D5ACA9 /* Carpool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Carpool.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D8AF8311FB0F46800D5ACA9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../Info.plist; sourceTree = "<group>"; };
 		0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ../../IB/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -73,6 +75,7 @@
 				0D8AF8371FB0F4A500D5ACA9 /* AppDelegate.swift */,
 				0D8AF8381FB0F4A500D5ACA9 /* ScheduleViewController.swift */,
 				0D8AF8431FB1137600D5ACA9 /* TripDetailViewController.swift */,
+				0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */,
 				0DE42CD61FB155B300F77FD8 /* ext.swift */,
 				0D0D6B791FB211E900A22A88 /* UI */,
 				0D8AF83B1FB0F57A00D5ACA9 /* Assets.xcassets */,
@@ -249,6 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D8AF83A1FB0F4A600D5ACA9 /* ScheduleViewController.swift in Sources */,
+				0D4F69621FB2179F00960CA4 /* CreateTripViewController.swift in Sources */,
 				0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */,
 				0D0D6B781FB20DF200A22A88 /* HandLayout.swift in Sources */,
 				0DE42CD71FB155B300F77FD8 /* ext.swift in Sources */,
