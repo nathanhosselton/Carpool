@@ -7,7 +7,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
         window = UIWindow()
-        window!.rootViewController = UINavigationController(rootViewController: ScheduleViewController())
+        window!.backgroundColor = .white
+        window!.rootViewController = UINavigationController(rootViewController: ScheduleViewController(style: .plain))
         window!.makeKeyAndVisible()
 
         return true

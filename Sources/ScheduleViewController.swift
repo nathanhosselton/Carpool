@@ -1,10 +1,10 @@
 import UIKit
 import CarpoolKit
 
-class ScheduleViewController: UITableViewController {
+final class ScheduleViewController: UITableViewController {
 
-    var trips: [Trip] = []
-    var legs: [Leg] = []
+    private var trips: [Trip] = []
+    private var legs: [Leg] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,18 +36,13 @@ class ScheduleViewController: UITableViewController {
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let eventDetailVC = TripDetailViewController(event: trip(for: indexPath).event, leg: legs[indexPath.row])
+        navigationController?.pushViewController(eventDetailVC, animated: true)
+    }
+
     private func trip(for indexPath: IndexPath) -> Trip {
         return trips[Int(floor(Double(indexPath.row) / 2.0))]
     }
 
-}
-
-
-
-extension Event {
-    var prettyDescription: NSAttributedString {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        return NSMutableAttributedString().bold(description).normal(" at ").bold(formatter.string(from: time))
-    }
 }
