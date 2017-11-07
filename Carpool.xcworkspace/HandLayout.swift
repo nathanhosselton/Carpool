@@ -358,6 +358,16 @@ public enum Shape: ExpressibleByIntegerLiteral {
     }
 }
 
+extension UITextField {
+    convenience init(_ namespacer: Namespacer, placeholder: String? = nil, style: UITextBorderStyle = .roundedRect, width: CGFloat? = nil) {
+        self.init()
+        self.placeholder = placeholder
+        self.borderStyle = style
+        sizeToFit()
+        self.width = width ?? self.width
+    }
+}
+
 public extension UIButton {
     /// - Note: If you set kerning at least once then you must use setAttributedTitle rather than setTitle from now on
     convenience init(_: Namespacer, title: String = "", font: FontConvertible = UIFont(size: UIFont.buttonFontSize), titleColor fg: UIColor? = nil, backgroundColor bg: UIColor? = nil, corners: Shape = .rounded(.auto), kerning: CGFloat? = UIKerningDefault)
