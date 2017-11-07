@@ -3,15 +3,15 @@ import CarpoolKit
 
 final class ScheduleViewController: UITableViewController {
 
-    private var trips: [Trip] = []
-    private var legs: [Leg] = []
+    private typealias ContextualLeg = (leg: Leg, trip: Trip)
+    private var legs: [ContextualLeg] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "Schedule"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAdd))
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "a")
+        tableView.register(Cell.self, forCellReuseIdentifier: Cell.reuseId)
 
         go()
     }
@@ -21,10 +21,24 @@ final class ScheduleViewController: UITableViewController {
     }
 
     private func go() {
-        API.fetchTripsOnce { trips in
-            self.trips = trips
-            self.legs = zip(trips.map{ $0.pickUp }, trips.map{ $0.dropOff }).flatMap{ [$0, $1] }
-            self.tableView.reloadData()
+        API.fetchTripsOnce { result in
+            switch result {
+            case .success(let trips):
+
+                self.legs.removeAll()
+                for trip in trips {
+                    if let dropOff = trip.dropOff {
+                        self.legs.append((dropOff, trip))
+                    }
+                    if let pickup = trip.pickUp {
+                        self.legs.append((pickup, trip))
+                    }
+                }
+
+                self.tableView.reloadData()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
         }
     }
 
@@ -33,21 +47,30 @@ final class ScheduleViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "a", for: indexPath)
-
-        cell.textLabel?.attributedText = trip(for: indexPath).event.prettyDescription
-        cell.backgroundColor = legs[indexPath.row].isClaimed ? .clear : .red
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: Cell.reuseId, for: indexPath)
+        cell.textLabel?.attributedText = legs[indexPath.row].trip.event.prettyDescription
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let eventDetailVC = TripDetailViewController(event: trip(for: indexPath).event, leg: legs[indexPath.row])
+        let (leg, trip) = legs[indexPath.row]
+        let eventDetailVC = TripDetailViewController(event: trip.event, leg: leg)
         navigationController?.pushViewController(eventDetailVC, animated: true)
     }
 
-    private func trip(for indexPath: IndexPath) -> Trip {
-        return trips[Int(floor(Double(indexPath.row) / 2.0))]
+}
+
+private final class Cell: UITableViewCell {
+    static var reuseId: String {
+        return String(describing: Cell.self)
     }
 
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textLabel?.numberOfLines = 0
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("Cell.init(coder:) has not been implemented")
+    }
 }

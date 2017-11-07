@@ -2,6 +2,17 @@
   "name": "CarpoolKit",
   "version": "0.0.1",
   "summary": "Foo",
+  "dependencies": {
+    "PromiseKit": [
+
+    ],
+    "FirebaseCommunity/Database": [
+
+    ],
+    "FirebaseCommunity/Auth": [
+
+    ]
+  },
   "description": "CarpoolKit",
   "homepage": "https://github.com/codebasesav/CarpoolKit",
   "license": "MIT",

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0D0D6B781FB20DF200A22A88 /* HandLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0D6B771FB20DF200A22A88 /* HandLayout.swift */; };
 		0D4F69621FB2179F00960CA4 /* CreateTripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */; };
-		0D8AF8321FB0F46800D5ACA9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8311FB0F46800D5ACA9 /* Info.plist */; };
 		0D8AF8341FB0F47900D5ACA9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8331FB0F47900D5ACA9 /* LaunchScreen.storyboard */; };
 		0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8371FB0F4A500D5ACA9 /* AppDelegate.swift */; };
 		0D8AF83A1FB0F4A600D5ACA9 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8381FB0F4A500D5ACA9 /* ScheduleViewController.swift */; };
@@ -193,18 +192,20 @@
 			inputPaths = (
 				"${SRCROOT}/../Pods/Target Support Files/Pods-Carpool/Pods-Carpool-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CarpoolKit/CarpoolKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FirebaseCommunity/FirebaseCommunity.framework",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CarpoolKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FirebaseCommunity.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
