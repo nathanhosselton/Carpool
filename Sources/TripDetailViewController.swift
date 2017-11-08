@@ -45,15 +45,3 @@ final class TripDetailViewController: UIViewController {
     }
 
 }
-
-private extension UILabel {
-    convenience init(_ text: String) {
-        self.init(NSMutableAttributedString().normal(text))
-    }
-
-    convenience init(_ attrText: NSAttributedString) {
-        self.init(frame: .zero)
-        attributedText = attrText
-        textAlignment = .center
-    }
-}

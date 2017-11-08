@@ -358,7 +358,8 @@ public enum Shape: ExpressibleByIntegerLiteral {
     }
 }
 
-extension UITextField {
+
+public extension UITextField {
     convenience init(_ namespacer: Namespacer, placeholder: String? = nil, style: UITextBorderStyle = .roundedRect, width: CGFloat? = nil) {
         self.init()
         self.placeholder = placeholder
@@ -367,6 +368,7 @@ extension UITextField {
         self.width = width ?? self.width
     }
 }
+
 
 public extension UIButton {
     /// - Note: If you set kerning at least once then you must use setAttributedTitle rather than setTitle from now on
@@ -437,6 +439,15 @@ public extension UIButton {
             .foregroundColor: titleColor.adjusted(alpha: 0.5),
             .underlineStyle: NSUnderlineStyle.styleSingle.rawValue
         ]), for: .highlighted)
+    }
+}
+
+
+public extension UISegmentedControl {
+    convenience init(_ titles: String...) {
+        self.init()
+        titles.enumerated().map{ ($1, $0) }.forEach(setTitle)
+        sizeToFit()
     }
 }
 
@@ -661,6 +672,16 @@ public extension UIDevice {
 }
 
 public extension UILabel {
+    convenience init(_ text: String) {
+        self.init(NSMutableAttributedString().normal(text))
+    }
+
+    convenience init(_ attrText: NSAttributedString) {
+        self.init(frame: .zero)
+        attributedText = attrText
+        textAlignment = .center
+    }
+
     func size(forHeight newHeight: CGFloat) -> CGSize {
         fatalError()
     }
@@ -825,4 +846,32 @@ public extension UIScreen {
     var height: CGFloat {
         return bounds.height
     }
-} 
+}
+
+
+//MARK: Real `text`
+//Because none of these are actually optional
+
+extension UILabel {
+    var realText: String? {
+        return text != "" ? text : nil
+    }
+}
+
+extension UITextField {
+    var realText: String? {
+        return text != "" ? text : nil
+    }
+}
+
+extension UITextView {
+    var realText: String? {
+        return text != "" ? text : nil
+    }
+}
+
+extension UISearchBar {
+    var realText: String? {
+        return text != "" ? text : nil
+    }
+}
