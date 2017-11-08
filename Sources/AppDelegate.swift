@@ -7,7 +7,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
-        Auth.auth().signInAnonymously { print(#function, $0 ?? $1 ?? "idfk") }
+//        Auth.auth().signInAnonymously { print(#function, $0 ?? $1 ?? "idfk") }
 
         window = UIWindow()
         window!.backgroundColor = .white

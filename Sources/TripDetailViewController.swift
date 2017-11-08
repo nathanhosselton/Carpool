@@ -1,7 +1,7 @@
 import UIKit
 import CarpoolKit
 
-private let margin: CGFloat = 8
+private let margin = 8.f
 
 final class TripDetailViewController: UIViewController {
     private var labels: UIStackView!

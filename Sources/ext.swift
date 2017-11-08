@@ -10,9 +10,19 @@ import CarpoolKit
 
 extension Event {
     var prettyDescription: NSAttributedString {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
+        let formatter: DateFormatter = .forEvents
         return NSMutableAttributedString().bold(description).normal(" at ").bold(formatter.string(from: time))
+    }
+}
+
+extension DateFormatter {
+    static var forEvents: DateFormatter {
+        return DateFormatter("h:mm a")
+    }
+
+    convenience init(_ format: String) {
+        self.init()
+        dateFormat = format
     }
 }
 

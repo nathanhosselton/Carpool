@@ -3,8 +3,7 @@ import CarpoolKit
 
 final class ScheduleViewController: UITableViewController {
 
-    private typealias ContextualLeg = (leg: Leg, trip: Trip)
-    private var legs: [ContextualLeg] = []
+    private var legs: [(leg: Leg, trip: Trip)] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +33,9 @@ final class ScheduleViewController: UITableViewController {
                         self.legs.append((pickup, trip))
                     }
                 }
+
+                //FIXME: Produces [(Leg?, Trip)] cant figure out how to filter nil legs without needing a cast
+//                let foo = trips.map{ (($0.dropOff, $0), ($0.pickUp, $0)) }.flatMap{ [$0.0, $0.1] }
 
                 self.tableView.reloadData()
             case .failure(let error):
