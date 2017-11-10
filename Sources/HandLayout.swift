@@ -856,31 +856,3 @@ public extension UIScreen {
         return bounds.height
     }
 }
-
-
-//MARK: Real `text`
-//Because none of these are actually optional
-
-extension UILabel {
-    var realText: String? {
-        return text != "" ? text : nil
-    }
-}
-
-extension UITextField {
-    var realText: String? {
-        return text != "" ? text : nil
-    }
-}
-
-extension UITextView {
-    var realText: String? {
-        return text != "" ? text : nil
-    }
-}
-
-extension UISearchBar {
-    var realText: String? {
-        return text != "" ? text : nil
-    }
-}

@@ -26,6 +26,13 @@ extension DateFormatter {
     }
 }
 
+extension String {
+    var chuzzled: String? {
+        let rv = trimmingCharacters(in: .whitespacesAndNewlines)
+        return rv.isEmpty ? nil : rv
+    }
+}
+
 //`phone` removed for now
 //extension User {
 //    var prettyPhone: String {

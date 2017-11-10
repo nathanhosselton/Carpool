@@ -107,7 +107,7 @@ final class CreateTripViewController: UIViewController {
     }
 
     @objc func onDestinationReturn() {
-        guard let query = destination.realText else { return }
+        guard let query = destination.text?.chuzzled else { return }
 
         MKLocalSearch(request: .init(query)).start { (resp, error) in
             guard let resp = resp else { return print(error!) }
@@ -127,7 +127,7 @@ final class CreateTripViewController: UIViewController {
     }
 
     var eventDescription: String? {
-        guard let name = name.realText, let dest = destination.realText else { return nil }
+        guard let name = name.text?.chuzzled, let dest = destination.text?.chuzzled else { return nil }
         return "Get \(name) to \(dest) by \(DateFormatter.forEvents.string(from: datePicker.date))"
     }
 
