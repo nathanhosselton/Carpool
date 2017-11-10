@@ -20,7 +20,7 @@ final class ScheduleViewController: UITableViewController {
     }
 
     private func go() {
-        API.fetchTripsOnce { result in
+        API.observeTrips { result in
             switch result {
             case .success(let trips):
 

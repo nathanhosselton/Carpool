@@ -1,10 +1,25 @@
+import FirebaseCommunity
 import PromiseKit
 
 public struct Trip: Codable, Keyed {
     var key: String!
     public let event: Event
-    public let pickUp: Leg?
+
+    /// the leg for dropping off children at the event
     public let dropOff: Leg?
+
+    /// the leg for picking up children from the event
+    public let pickUp: Leg?
+
+    enum CodingKeys: String, CodingKey {
+        case key, event, pickUp, dropOff
+        case _children = "children"
+    }
+
+    public var children: [Child] {
+        return _children ?? []
+    }
+    let _children: [Child]?
 }
 
 extension Trip: Equatable {
@@ -15,7 +30,7 @@ extension Trip: Equatable {
 
 extension Trip: Comparable {
     public static func <(lhs: Trip, rhs: Trip) -> Bool {
-        return lhs.event.time < rhs.event.time
+        return lhs.event.time > rhs.event.time
     }
 }
 
@@ -27,21 +42,26 @@ extension Trip: Hashable {
 
 extension Trip {
     static func make(key: String, json: [String: Any]) -> Promise<Trip> {
-        do {
-            func get(key: String) -> User? {
-                guard let json = json[key] as? [String: String] else { return nil }
-                guard let item = json.first else { return nil }
-                return User(key: item.key, name: item.value)
-            }
-
-            //guard let owner = get(key: "owner") else { throw API.Error.decode }
-            let dropOff = get(key: "dropOff")
-            let pickUp = get(key: "pickUp")
-            let event = try Event(json: json, key: "event")
-
-            return Promise(value: Trip(key: key, event: event, pickUp: pickUp.map(Leg.init), dropOff: dropOff.map(Leg.init)))
-        } catch {
-            return Promise(error: error)
+        func getLeg(key: String) -> Promise<User?> {
+            guard let json = json[key] as? [String: String] else { return Promise(value: nil) }
+            guard let item = json.first else { return Promise(value: nil) }
+            return API.fetchUser(id: item.key).then(on: zalgo){ $0 }
         }
+
+        let dropOff = getLeg(key: "dropOff")
+        let pickUp = getLeg(key: "pickUp")
+        let event = Event.make(key: "event", json: json)
+
+        return firstly {
+            when(fulfilled: dropOff, pickUp, event)
+        }.then { dropOff, pickUp, event in
+            Trip(key: key, event: event, dropOff: dropOff.map(Leg.init), pickUp: pickUp.map(Leg.init), _children: [])
+        }
+    }
+}
+
+extension Trip: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return key
     }
 }
