@@ -4,7 +4,7 @@ import CarpoolKit
 private let margin = 8.f
 
 final class TripDetailViewController: UIViewController {
-    private var labels: UIStackView!
+    private let labels: UIStackView
 
     private let event: Event
     private let leg: Leg
@@ -12,6 +12,10 @@ final class TripDetailViewController: UIViewController {
     init(event: Event, leg: Leg) {
         self.event = event
         self.leg = leg
+        self.labels = UIStackView(arrangedSubviews: [
+            UILabel(event.prettyDescription, .center),
+            UILabel("Driver: " + (leg.driver.name ?? "Anonymous User"), .center)
+        ])
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -26,15 +30,8 @@ final class TripDetailViewController: UIViewController {
         view.backgroundColor = .white
         edgesForExtendedLayout = []
 
-        labels = {
-            let rv = UIStackView(arrangedSubviews: [
-                UILabel(event.prettyDescription),
-                UILabel("Driver: " + (leg.driver.name ?? "Anonymous User"))
-            ])
-            rv.distribution = .fillProportionally
-            rv.axis = .vertical
-            return rv
-        }()
+        labels.distribution = .fillProportionally
+        labels.axis = .vertical
 
         view.addSubview(labels)
     }
