@@ -453,7 +453,9 @@ public extension UIButton {
 public extension UISegmentedControl {
     convenience init(_ titles: String...) {
         self.init()
-        titles.enumerated().map{ ($1, $0) }.forEach(setTitle)
+        guard titles.count > 0 else { return }
+        titles.enumerated().map{ ($1, $0, false) }.forEach(insertSegment)
+        selectedSegmentIndex = 0
         sizeToFit()
     }
 }
