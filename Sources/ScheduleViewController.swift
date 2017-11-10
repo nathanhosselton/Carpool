@@ -2,15 +2,23 @@ import UIKit
 import CarpoolKit
 
 final class ScheduleViewController: UITableViewController {
+    let filterControl = UISegmentedControl("My Trips", "All Trips")
 
-    private var legs: [(leg: Leg, trip: Trip)] = []
+    typealias ContextualLeg = (leg: Leg, trip: Trip)
+
+    private var myLegs: [ContextualLeg] = []
+    private var allLegs: [ContextualLeg] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "Schedule"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAdd))
+
         tableView.register(Cell.self, forCellReuseIdentifier: Cell.reuseId)
+        tableView.tableHeaderView = filterControl
+
+        filterControl.addTarget(self, action: #selector(onFilterChanged), for: .valueChanged)
 
         go()
     }
@@ -19,43 +27,53 @@ final class ScheduleViewController: UITableViewController {
         navigationController?.pushViewController(CreateTripViewController(), animated: true)
     }
 
+    @objc func onFilterChanged() {
+        tableView.reloadData()
+    }
+
     private func go() {
+        //FIXME: Use PromiseKit.when
+
+        API.observeMyTrips { (result) in
+            switch result {
+            case .success(let trips):
+                self.myLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
+                self.tableView.reloadData()
+            case .failure(let error):
+                print(error)
+            }
+        }
+
         API.observeTrips { result in
             switch result {
             case .success(let trips):
-
-                self.legs.removeAll()
-                for trip in trips {
-                    if let dropOff = trip.dropOff {
-                        self.legs.append((dropOff, trip))
-                    }
-                    if let pickup = trip.pickUp {
-                        self.legs.append((pickup, trip))
-                    }
-                }
-
-                //FIXME: Produces [(Leg?, Trip)] cant figure out how to filter nil legs without needing a cast
-//                let foo = trips.map{ (($0.dropOff, $0), ($0.pickUp, $0)) }.flatMap{ [$0.0, $0.1] }
-
-                self.tableView.reloadData()
+                self.allLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
             case .failure(let error):
-                print(error.localizedDescription)
+                print(error)
             }
         }
     }
 
+    private var onscreenLegs: [ContextualLeg] {
+        switch filterControl.selectedSegmentIndex {
+        case 0: return myLegs
+        case 1: return allLegs
+        default: fatalError()
+        }
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return legs.count
+        return onscreenLegs.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Cell.reuseId, for: indexPath)
-        cell.textLabel?.attributedText = legs[indexPath.row].trip.event.prettyDescription
+        cell.textLabel?.attributedText = onscreenLegs[indexPath.row].trip.event.prettyDescription
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let (leg, trip) = legs[indexPath.row]
+        let (leg, trip) = onscreenLegs[indexPath.row]
         let eventDetailVC = TripDetailViewController(event: trip.event, leg: leg)
         navigationController?.pushViewController(eventDetailVC, animated: true)
     }

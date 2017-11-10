@@ -20,7 +20,7 @@ final class TripDetailViewController: UIViewController {
     }
 
     required init?(coder: NSCoder) {
-        fatalError(#file + ": init(coder:) has not been implemented")
+        fatalError("TripDetailViewController.init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -32,6 +32,7 @@ final class TripDetailViewController: UIViewController {
 
         labels.distribution = .fillProportionally
         labels.axis = .vertical
+        labels.subviews.forEach { ($0 as? UILabel)?.numberOfLines = 0 }
 
         view.addSubview(labels)
     }
