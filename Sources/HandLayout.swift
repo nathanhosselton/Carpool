@@ -304,6 +304,13 @@ public extension UIViewController {
     var bounds: CGRect {
         return view.bounds
     }
+
+    func inNav(leftBarButton: UIBarButtonItem? = nil, rightBarButton: UIBarButtonItem? = nil) -> UIViewController {
+        let nav = UINavigationController(rootViewController: self)
+        navigationItem.leftBarButtonItem = leftBarButton
+        navigationItem.rightBarButtonItem = rightBarButton
+        return nav
+    }
 }
 
 extension UIEdgeInsets: ExpressibleByIntegerLiteral {
@@ -672,14 +679,14 @@ public extension UIDevice {
 }
 
 public extension UILabel {
-    convenience init(_ text: String) {
-        self.init(NSMutableAttributedString().normal(text))
+    convenience init(_ text: String, _ alignment: NSTextAlignment = .left) {
+        self.init(NSMutableAttributedString().normal(text), alignment)
     }
 
-    convenience init(_ attrText: NSAttributedString) {
+    convenience init(_ attrText: NSAttributedString, _ alignment: NSTextAlignment = .left) {
         self.init(frame: .zero)
         attributedText = attrText
-        textAlignment = .center
+        textAlignment = alignment
     }
 
     func size(forHeight newHeight: CGFloat) -> CGSize {
