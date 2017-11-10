@@ -13,8 +13,8 @@ final class TripDetailViewController: UIViewController {
         self.event = event
         self.leg = leg
         self.labels = UIStackView(arrangedSubviews: [
-            UILabel(event.prettyDescription, .center),
-            UILabel("Driver: " + (leg.driver.name ?? "Anonymous User"), .center)
+            UILabel(.byhand, event.prettyDescription, .center),
+            UILabel(.byhand, "Driver: " + (leg.driver.name ?? "Anonymous User"), .center)
         ])
         super.init(nibName: nil, bundle: nil)
     }

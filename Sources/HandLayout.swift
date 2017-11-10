@@ -451,7 +451,7 @@ public extension UIButton {
 
 
 public extension UISegmentedControl {
-    convenience init(_ titles: String...) {
+    convenience init(_: Namespacer, _ titles: String...) {
         self.init()
         guard titles.count > 0 else { return }
         titles.enumerated().map{ ($1, $0, false) }.forEach(insertSegment)
@@ -681,11 +681,11 @@ public extension UIDevice {
 }
 
 public extension UILabel {
-    convenience init(_ text: String, _ alignment: NSTextAlignment = .left) {
-        self.init(NSMutableAttributedString().normal(text), alignment)
+    convenience init(_: Namespacer, _ text: String, _ alignment: NSTextAlignment = .left) {
+        self.init(.byhand, NSMutableAttributedString().normal(text), alignment)
     }
 
-    convenience init(_ attrText: NSAttributedString, _ alignment: NSTextAlignment = .left) {
+    convenience init(_: Namespacer, _ attrText: NSAttributedString, _ alignment: NSTextAlignment = .left) {
         self.init(frame: .zero)
         attributedText = attrText
         textAlignment = alignment

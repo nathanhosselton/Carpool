@@ -42,7 +42,7 @@ final class CreateTripViewController: UIViewController {
         name = UITextField(.byhand, placeholder: "Who needs to get somewhere?")
         destination = UITextField(.byhand, placeholder: "Where are they going?")
         map = MKMapView()
-        byWhen = UILabel("  By when?")
+        byWhen = UILabel(.byhand, "  By when?")
         datePicker = UIDatePicker()
         confirm = UIButton(.byhand, title: "Create Trip", font: UIFont.systemFont(ofSize: UIFont.buttonFontSize))
         stack = UIStackView(arrangedSubviews: [name, destination, map, byWhen, datePicker, confirm])

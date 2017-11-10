@@ -2,7 +2,7 @@ import UIKit
 import CarpoolKit
 
 final class ScheduleViewController: UITableViewController {
-    let filterControl = UISegmentedControl("My Trips", "All Trips")
+    let filterControl = UISegmentedControl(.byhand, "My Trips", "All Trips")
 
     typealias ContextualLeg = (leg: Leg, trip: Trip)
 
