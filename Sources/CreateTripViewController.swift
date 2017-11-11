@@ -146,7 +146,21 @@ final class CreateTripViewController: UIViewController {
     }
 
     @objc func onResultsDismiss() {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true)
+    }
+
+    @objc func onLoginDismiss() {
+        dismiss(animated: true)
+    }
+
+    private func showLoginPrompt() {
+        let alert = UIAlertController(title: "Hold up", message: CreateTripError.needsLogin.localizedDescription, preferredStyle: .alert)
+        alert.addAction(.init(title: "Let's go", style: .default) { _ in
+            let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(self.onLoginDismiss))
+            self.present(LoginViewController().inNav(rightBarButton: cancel), animated: true)
+        })
+        alert.addAction(.init(title: "Never mind", style: .cancel, handler: nil))
+        self.present(alert, animated: true)
     }
 
 }
@@ -211,11 +225,6 @@ private final class LocationManagerAdapter: NSObject, CLLocationManagerDelegate 
     private var accessRequestCompletion: ((AccessResult) -> Void)?
     private var userLocationCompletion: ((LocationResult) -> Void)?
 
-    private func cleanup() {
-        accessRequestCompletion = nil
-        userLocationCompletion = nil
-    }
-
     func confirmAccess(_ completion: @escaping (AccessResult) -> Void) {
         switch CLLocationManager.authorizationStatus() {
         case .authorizedAlways, .authorizedWhenInUse:
@@ -249,24 +258,25 @@ private final class LocationManagerAdapter: NSObject, CLLocationManagerDelegate 
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
             accessRequestCompletion?(.granted)
+            accessRequestCompletion = nil
             locationManager.requestLocation()
         case .notDetermined, .restricted, .denied:
             userLocationCompletion?(.failure(.userDenied))
             accessRequestCompletion?(.denied)
-            cleanup()
+            accessRequestCompletion = nil
+            userLocationCompletion = nil
         }
     }
 
     func locationManager(_ _: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let first = locations.first else { return }
-        userLocation = first
-        userLocationCompletion?(.success(first))
-        cleanup()
+        userLocation = locations.first!
+        userLocationCompletion?(.success(userLocation!))
+        userLocationCompletion = nil
     }
 
     func locationManager(_ _: CLLocationManager, didFailWithError error: Error) {
         userLocationCompletion?(.failure(.requestFailed(error)))
-        cleanup()
+        userLocationCompletion = nil
     }
 
 }

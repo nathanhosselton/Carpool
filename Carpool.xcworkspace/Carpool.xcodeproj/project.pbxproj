@@ -17,6 +17,7 @@
 		0D8AF83E1FB0FE9600D5ACA9 /* etc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF83D1FB0FE9600D5ACA9 /* etc.swift */; };
 		0D8AF8421FB10EEB00D5ACA9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D8AF8411FB10EEB00D5ACA9 /* GoogleService-Info.plist */; };
 		0D8AF8441FB1137600D5ACA9 /* TripDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AF8431FB1137600D5ACA9 /* TripDetailViewController.swift */; };
+		0D8FA0F31FB6482B00BBC34D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8FA0F21FB6482B00BBC34D /* LoginViewController.swift */; };
 		0DE42CD71FB155B300F77FD8 /* ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE42CD61FB155B300F77FD8 /* ext.swift */; };
 		12D4467C7E3F56476861EEA7 /* Pods_Carpool.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54F9F3DCFF03C3873FC02AA6 /* Pods_Carpool.framework */; };
 /* End PBXBuildFile section */
@@ -35,6 +36,7 @@
 		0D8AF8411FB10EEB00D5ACA9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0D8AF8431FB1137600D5ACA9 /* TripDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TripDetailViewController.swift; path = ../Sources/TripDetailViewController.swift; sourceTree = "<group>"; };
 		0D8FA0F11FB5F95400BBC34D /* Savannah.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Savannah.gpx; sourceTree = "<group>"; };
+		0D8FA0F21FB6482B00BBC34D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = ../Sources/LoginViewController.swift; sourceTree = "<group>"; };
 		0DE42CD61FB155B300F77FD8 /* ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ext.swift; path = ../Sources/ext.swift; sourceTree = "<group>"; };
 		54F9F3DCFF03C3873FC02AA6 /* Pods_Carpool.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Carpool.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		62A98556D73EA3F69F485549 /* Pods-Carpool.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Carpool.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Carpool/Pods-Carpool.debug.xcconfig"; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				0D8AF8381FB0F4A500D5ACA9 /* ScheduleViewController.swift */,
 				0D8AF8431FB1137600D5ACA9 /* TripDetailViewController.swift */,
 				0D4F69611FB2179F00960CA4 /* CreateTripViewController.swift */,
+				0D8FA0F21FB6482B00BBC34D /* LoginViewController.swift */,
 				0DE42CD61FB155B300F77FD8 /* ext.swift */,
 				0D4F69631FB2668F00960CA4 /* UserError.swift */,
 				0D0D6B791FB211E900A22A88 /* UI */,
@@ -256,6 +259,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D8FA0F31FB6482B00BBC34D /* LoginViewController.swift in Sources */,
 				0D8AF83A1FB0F4A600D5ACA9 /* ScheduleViewController.swift in Sources */,
 				0D4F69621FB2179F00960CA4 /* CreateTripViewController.swift in Sources */,
 				0D8AF8391FB0F4A600D5ACA9 /* AppDelegate.swift in Sources */,
