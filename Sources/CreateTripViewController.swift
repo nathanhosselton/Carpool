@@ -31,7 +31,6 @@ final class CreateTripViewController: UIViewController {
     private let stack: UIStackView
 
     private let locationAdapter = LocationManagerAdapter()
-
     private var endPoint: CLLocation?
 
     private var scroll: UIScrollView {
@@ -126,20 +125,20 @@ final class CreateTripViewController: UIViewController {
         }
     }
 
-    var eventDescription: String? {
+    private var eventDescription: String? {
         guard let name = name.text?.chuzzled, let dest = destination.text?.chuzzled else { return nil }
         return "Get \(name) to \(dest) by \(DateFormatter.forEvents.string(from: datePicker.date))"
     }
 
     @objc func onConfirm() {
         guard let desc = eventDescription else { return show(CreateTripError.invalidTrip) }
-//        print(desc, endPoint ?? "no location")
+
         API.createTrip(eventDescription: desc, eventTime: datePicker.date, eventLocation: endPoint ?? CLLocation()) { (result) in
             switch result {
             case .success(let trip):
                 print(trip)
             case .failure(API.Error.anonymousUsersCannotCreateTrips):
-                self.show(CreateTripError.needsLogin)
+                self.showLoginPrompt()
             case .failure(let error):
                 print(error)
             }
@@ -157,6 +156,7 @@ extension CreateTripViewController: MKMapViewDelegate {
         map.showAnnotations(views.flatMap{ $0.annotation }, animated: true)
     }
 }
+
 
 
 private final class SearchResultsTableViewController: UITableViewController {
@@ -188,6 +188,7 @@ private final class SearchResultsTableViewController: UITableViewController {
         completion(results[indexPath.row])
     }
 }
+
 
 
 private final class LocationManagerAdapter: NSObject, CLLocationManagerDelegate {
