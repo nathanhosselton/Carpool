@@ -14,7 +14,7 @@ private enum CreateTripError: UserError {
         case .invalidTrip:
             return "All fields must be filled in before you can create the trip."
         case .userDeniedLocation:
-            return "We'll be unable to do accurate destination lookups for you without your location. You can enable this later in the Privacy Settings of your device."
+            return "We'll be unable to provide accurate destination lookups for you without your location. You can enable this later in the Privacy Settings of your device."
         case .needsLogin:
             return "You must login before creating a Trip."
         }
@@ -135,12 +135,12 @@ final class CreateTripViewController: UIViewController {
 
         API.createTrip(eventDescription: desc, eventTime: datePicker.date, eventLocation: endPoint ?? CLLocation()) { (result) in
             switch result {
-            case .success(let trip):
-                print(trip)
+            case .success(_):
+                self.navigationController?.popToRootViewController(animated: true)
             case .failure(API.Error.anonymousUsersCannotCreateTrips):
                 self.showLoginPrompt()
             case .failure(let error):
-                print(error)
+                self.show(error)
             }
         }
     }

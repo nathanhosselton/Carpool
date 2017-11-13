@@ -12,4 +12,11 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: "Gotcha", style: .cancel, handler: nil))
         present(alert, animated: true)
     }
+
+    func show(_ e: Swift.Error) {
+        let msg = "Sorry about that. Here's some more info in case it helps:\n\n\(e.localizedDescription)"
+        let alert = UIAlertController(title: "Something broke", message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Gotcha", style: .cancel, handler: nil))
+        present(alert, animated: true)
+    }
 }

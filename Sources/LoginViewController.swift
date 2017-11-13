@@ -10,7 +10,7 @@ private enum LoginError: UserError {
     var description: String {
         switch self {
         case .notAllFieldsFilled:
-            return "You must fill in all fields to proceed"
+            return "You must fill in all fields to proceed."
         case .passwordsDoNotMatch:
             return "Your passwords do not match."
         }
@@ -18,7 +18,7 @@ private enum LoginError: UserError {
 }
 
 final class LoginViewController: UIViewController {
-    private let pathSegment: UISegmentedControl
+    private let pathControl: UISegmentedControl
     private let email: UITextField
     private let password: UITextField
     private let confirm: UITextField
@@ -27,13 +27,13 @@ final class LoginViewController: UIViewController {
     private let stack: UIStackView
 
     required init(coder: NSCoder = .null) {
-        pathSegment = UISegmentedControl(.byhand, "Log in", "Sign up")
+        pathControl = UISegmentedControl(.byhand, "Log in", "Sign up")
         email = UITextField(.byhand, placeholder: "Email")
         password = UITextField(.byhand, placeholder: "Password")
         confirm = UITextField(.byhand, placeholder: "Confirm password")
         fullName = UITextField(.byhand, placeholder: "Your full name")
         proceed = UIButton(.byhand, title: "Proceed", font: UIFont.systemFont(ofSize: UIFont.buttonFontSize))
-        stack = UIStackView(arrangedSubviews: [pathSegment, email, password, confirm, fullName, proceed])
+        stack = UIStackView(arrangedSubviews: [pathControl, email, password, confirm, fullName, proceed])
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -50,7 +50,7 @@ final class LoginViewController: UIViewController {
 
         //View config
 
-        pathSegment.addTarget(self, action: #selector(onPathChange), for: .valueChanged)
+        pathControl.addTarget(self, action: #selector(onPathChange), for: .valueChanged)
 
         email.textContentType = .emailAddress
         email.enablesReturnKeyAutomatically = true
@@ -109,7 +109,7 @@ final class LoginViewController: UIViewController {
     }
 
     @objc func onPasswordReturn() {
-        switch pathSegment.selectedSegmentIndex {
+        switch pathControl.selectedSegmentIndex {
         case 0: logIn()
         case 1: confirm.becomeFirstResponder()
         default: fatalError()
@@ -125,40 +125,34 @@ final class LoginViewController: UIViewController {
     }
 
     @objc func go() {
-        switch pathSegment.selectedSegmentIndex {
+        switch pathControl.selectedSegmentIndex {
         case 0: logIn()
         case 1: signUp()
         default: fatalError()
         }
     }
 
-    private func logIn() {
-        guard let email = email.text?.chuzzled, let password = password.text?.chuzzled else { return show(LoginError.notAllFieldsFilled) }
-
-        API.signIn(email: email, password: password) { (result) in
+    private var authed: (CarpoolKit.Result<User>) -> Void {
+        return { (result) in
             switch result {
-            case .success(let user):
-                //FIXME: Dismiss and stuff
-                print(#file, user)
+            case .success(_):
+                self.dismiss(animated: true)
             case .failure(let error):
-                print(#file, error)
+                self.show(error)
+                print(#file, #function, error)
             }
         }
+    }
+
+    private func logIn() {
+        guard let email = email.text?.chuzzled, let password = password.text?.chuzzled else { return show(LoginError.notAllFieldsFilled) }
+        API.signIn(email: email, password: password, completion: authed)
     }
 
     private func signUp() {
         guard let email = email.text?.chuzzled, let password = password.text?.chuzzled, let name = fullName.text?.chuzzled else { return show(LoginError.notAllFieldsFilled) }
         guard password == confirm.text else { return show(LoginError.passwordsDoNotMatch) }
-
-        API.signUp(email: email, password: password, fullName: name) { (result) in
-            switch result {
-            case .success(let user):
-                //FIXME: Dismiss and stuff
-                print(#file, user)
-            case .failure(let error):
-                print(#file, error)
-            }
-        }
+        API.signUp(email: email, password: password, fullName: name, completion: authed)
     }
 
 }

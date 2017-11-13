@@ -38,7 +38,7 @@ final class ScheduleViewController: UITableViewController {
             switch result {
             case .success(let trips):
                 self.myLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
-                self.tableView.reloadData()
+                if self.filterControl.selectedSegmentIndex == 0 { self.tableView.reloadData() }
             case .failure(let error):
                 print(error)
             }
@@ -48,6 +48,7 @@ final class ScheduleViewController: UITableViewController {
             switch result {
             case .success(let trips):
                 self.allLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
+                if self.filterControl.selectedSegmentIndex == 1 { self.tableView.reloadData() }
             case .failure(let error):
                 print(error)
             }
