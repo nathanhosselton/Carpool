@@ -28,6 +28,7 @@ final class CreateTripViewController: UIViewController {
     private let byWhen: UILabel
     private let datePicker: UIDatePicker
     private let confirm: UIButton
+    private let fields: UIStackView
     private let stack: UIStackView
 
     private let locationAdapter = LocationManagerAdapter()
@@ -44,7 +45,8 @@ final class CreateTripViewController: UIViewController {
         byWhen = UILabel(.byhand, "  By when?")
         datePicker = UIDatePicker()
         confirm = UIButton(.byhand, title: "Create Trip", font: UIFont.systemFont(ofSize: UIFont.buttonFontSize))
-        stack = UIStackView(arrangedSubviews: [name, destination, map, byWhen, datePicker, confirm])
+        fields = UIStackView(arrangedSubviews: [name, destination])
+        stack = UIStackView(arrangedSubviews: [fields, map, byWhen, datePicker, confirm])
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -73,6 +75,12 @@ final class CreateTripViewController: UIViewController {
         datePicker.minimumDate = Date()
 
         confirm.addTarget(self, action: #selector(onConfirm), for: .touchUpInside)
+
+        fields.axis = .vertical
+        fields.distribution = .fillProportionally
+        fields.spacing = margin * 2
+        fields.directionalLayoutMargins = .init(top: 0, leading: margin, bottom: 0, trailing: margin)
+        fields.isLayoutMarginsRelativeArrangement = true
 
         stack.axis = .vertical
         stack.distribution = .fillProportionally
