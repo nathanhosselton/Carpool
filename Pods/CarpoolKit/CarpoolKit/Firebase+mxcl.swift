@@ -3,7 +3,7 @@ import PromiseKit
 
 extension DataSnapshot {
     func value<T: Decodable & Keyed>(key: String) throws -> T {
-        guard let value = self.value else { throw API.Error.noChild }
+        guard let value = self.value else { throw API.Error.noChildNode }
         try checkIsValidJsonType(value)
         let data = try JSONSerialization.data(withJSONObject: value)
         var foo: T = try JSONDecoder().decode(T.self, from: data)
@@ -14,7 +14,7 @@ extension DataSnapshot {
     func array<T: Decodable & Keyed>() throws -> [T] {
         guard let rawValues = self.value else { return [] }  // nothing there yet, which means empty array
         if rawValues is NSNull { return [] }  // nothing there yet, which means empty array
-        guard let values = rawValues as? [String: Any] else { throw API.Error.noChildren }
+        guard let values = rawValues as? [String: Any] else { throw API.Error.noChildNodes }
 
         return try values.map {
             try checkIsValidJsonType($0.value)

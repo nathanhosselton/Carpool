@@ -5,11 +5,9 @@ import PromiseKit
 public enum API {
     public enum Error: Swift.Error {
         case notAuthorized
-        case noChild
-        case noChildren
-        case noSuchTrip
+        case noChildNode
+        case noChildNodes
         case decode
-        case legAndTripAreNotRelated
         case invalidJsonType
         case emptyDescription
         case notAString
@@ -46,6 +44,9 @@ public enum API {
     public static func signUp(email: String, password: String, fullName: String, completion: @escaping (Result<User>) -> Void) {
         if let user = Auth.auth().currentUser {
             link(user: user, email: email, password: password, completion: completion)
+            Database.database().reference().child("users").child(user.uid).updateChildValues([
+                "name": fullName
+            ])
         } else {
             firstly {
                 PromiseKit.wrap{ Auth.auth().createUser(withEmail: email, password: password, completion: $0) }
@@ -100,21 +101,16 @@ public enum API {
         }
     }
 
-    /// returns the current list of trips, once
-    public static func fetchTripsOnce(completion: @escaping (Result<[Trip]>) -> Void) {
-        DispatchQueue.main.async {
-            completion(.failure(Error.deprecated))
-        }
-    }
-
     /// returns all trips, continuously
-    public static func observeTrips(completion: @escaping (Result<[Trip]>) -> Void) {
+    public static func observeTrips(sender: UIViewController, completion: @escaping (Result<[Trip]>) -> Void) {
         firstly {
             auth()
-        }.then {
-            Database.database().reference().child("trips").observe(.value) { snapshot in
+        }.then { () -> Void in
+            let reaper = Lifetime()
+            reaper.ref = Database.database().reference().child("trips")
+            reaper.observer = reaper.ref.observe(.value) { snapshot in
                 guard let foo = snapshot.value as? [String: [String: Any]] else {
-                    return completion(.failure(API.Error.noChildren))
+                    return completion(.failure(API.Error.noChildNodes))
                 }
                 firstly {
                     when(resolved: foo.map{ Trip.make(key: $0, json: $1) })
@@ -122,7 +118,7 @@ public enum API {
                     var trips: [Trip] = []
                     for case .fulfilled(let trip) in results { trips.append(trip) }
                     if trips.isEmpty && !results.isEmpty {
-                        throw Error.noChildren
+                        throw Error.noChildNodes
                     }
                     trips.sort()
                     completion(.success(trips))
@@ -130,25 +126,82 @@ public enum API {
                     completion(.failure($0))
                 }
             }
+            sender.view.addSubview(reaper)
         }.catch {
             completion(.failure($0))
         }
     }
 
     /// returns all the current user's trips, continuously
-    public static func observeMyTrips(completion: @escaping (Result<[Trip]>) -> Void) {
-        observeTrips { result in
+    public static func observeMyTrips(sender: UIViewController, observer: @escaping (Result<[Trip]>) -> Void) {
+        observeTrips(sender: sender) { result in
             switch result {
             case .success(let trips):
                 fetchCurrentUser().then { user in
-                    completion(.success(trips.filter{ $0.event.owner == user }))
+                    observer(.success(trips.filter{ $0.event.owner == user }))
                 }.catch {
-                    completion(.failure($0))
+                    observer(.failure($0))
                 }
             case .failure(let error):
-                completion(.failure(error))
+                observer(.failure(error))
             }
         }
+    }
+
+    /// returns all the current user's friends' trips, continuously
+    public static func observeTheTripsOfMyFriends(sender: UIViewController, observer: @escaping (Result<[Trip]>) -> Void) {
+
+        var trips: [Trip] = []
+        var friends: [User] = []
+
+        func process() {
+            guard trips.count > 0, friends.count > 0 else { return }
+            observer(.success(trips.filter{ friends.contains($0.event.owner) }))
+        }
+
+        observeTrips(sender: sender) { result in
+            switch result {
+            case .success(let _trips):
+                trips = _trips
+                process()
+            case .failure(let error):
+                observer(.failure(error))
+            }
+        }
+
+        observeFriends(sender: sender) { result in
+            switch result {
+            case .success(let _friends):
+                friends = _friends
+                process()
+            case .failure(let error):
+                observer(.failure(error))
+            }
+        }
+    }
+
+    /// observe changes to the Trip, so if you have a trip
+    /// object on your VC you will want to observe it here
+    /// and update that property with the new value from the observer callback
+    public static func observe(trip: Trip, sender: UIViewController, observer: @escaping (Result<Trip>) -> Void) {
+        let reaper = Lifetime()
+        reaper.ref = Database.database().reference().child("trips").child(trip.key)
+        reaper.observer = reaper.ref.observe(.value) { snapshot in
+            do {
+                guard let json = snapshot.value as? [String: Any] else { throw Error.noChildNode }
+                firstly {
+                    Trip.make(key: trip.key, json: json)
+                }.then {
+                    observer(.success($0))
+                }.catch {
+                    observer(.failure($0))
+                }
+            } catch {
+                observer(.failure(error))
+            }
+        }
+
+        sender.view.addSubview(reaper)
     }
 
     /// claims the initial leg by the current user, so pickUp leg is UNCLAIMED
@@ -298,12 +351,12 @@ public enum API {
         }
     }
 
-    public var isCurrentUserAnonymous: Bool {
+    /// you can still access data as an anonymous user, but you cannot create events
+    public static var isCurrentUserAnonymous: Bool {
         return Auth.auth().currentUser?.isAnonymous ?? true
     }
 
     public static func delete(trip: Trip) throws {
-        //TODO
         guard trip.event.owner.key == Auth.auth().currentUser?.uid else {
             throw Error.notYourTripToDelete
         }
@@ -361,6 +414,58 @@ public enum API {
             for key in snapshot.keys {
                 ref.child(key).child("event").child("endTime").setValue(endTime)
             }
+        }
+    }
+
+    //TODO this will not scale
+    public static func search(forUsersWithName query: String, completion: @escaping (Result<[User]>) -> Void) {
+        firstly {
+            Database.fetch(path: "users")
+        }.then(on: .global()) { users in
+            try users.array().filter {
+                guard let parts = $0.name?.lowercased().split(separator: " ") else {
+                    return false
+                }
+                for part in parts { if part.contains(query) {
+                    return true
+                }}
+                return false
+            }
+        }.then {
+            completion(.success($0))
+        }.catch {
+            completion(.failure($0))
+        }
+    }
+
+    public static func add(friend: User) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }  //TODO error handling
+        Database.database().reference().child("users").child(uid).child("friends").updateChildValues([
+            friend.key: friend.name ?? "Anonymous Parent"
+        ])
+    }
+
+    public static func remove(friend: User) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }  //TODO error handling
+        Database.database().reference().child("users").child(uid).child("friends").child(friend.key).removeValue()
+    }
+
+    public static func observeFriends(sender: UIViewController, observer: @escaping (Result<[User]>) -> Void) {
+        firstly {
+            fetchCurrentUser()
+        }.then { user -> Void in
+            let reaper = Lifetime()
+            reaper.ref = Database.database().reference().child("users").child(user.key).child("friends")
+            reaper.observer = reaper.ref.observe(.value) { snapshot in
+                do {
+                    observer(.success(try snapshot.array()))
+                } catch {
+                    observer(.failure(error))
+                }
+            }
+            sender.view.addSubview(reaper)
+        }.catch {
+            observer(.failure($0))
         }
     }
 }

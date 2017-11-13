@@ -1,3 +1,4 @@
+import FirebaseCommunity
 import CoreLocation
 
 func checkIsValidJsonType(_ any: Any) throws {
@@ -31,5 +32,15 @@ public extension String {
     func chuzzled() -> String? {
         let rv = trimmingCharacters(in: .whitespacesAndNewlines)
         return rv.isEmpty ? nil : rv
+    }
+}
+
+/// for automatically stopping observing
+class Lifetime: UIView {
+    var ref: DatabaseReference!
+    var observer: DatabaseHandle!
+
+    deinit {
+        ref.removeObserver(withHandle: observer)
     }
 }

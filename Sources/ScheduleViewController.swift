@@ -34,7 +34,7 @@ final class ScheduleViewController: UITableViewController {
     private func go() {
         //FIXME: Use PromiseKit.when
 
-        API.observeMyTrips { (result) in
+        API.observeMyTrips(sender: self) { (result) in
             switch result {
             case .success(let trips):
                 self.myLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
@@ -44,7 +44,7 @@ final class ScheduleViewController: UITableViewController {
             }
         }
 
-        API.observeTrips { result in
+        API.observeTrips(sender: self) { result in
             switch result {
             case .success(let trips):
                 self.allLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
