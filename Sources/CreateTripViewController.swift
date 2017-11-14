@@ -135,7 +135,7 @@ final class CreateTripViewController: UIViewController {
 
     private var eventDescription: String? {
         guard let name = name.text?.chuzzled, let dest = destination.text?.chuzzled else { return nil }
-        return "Get \(name) to \(dest) by \(DateFormatter.forEvents.string(from: datePicker.date))"
+        return "Get \(name) to \(dest)"
     }
 
     @objc func onConfirm() {
