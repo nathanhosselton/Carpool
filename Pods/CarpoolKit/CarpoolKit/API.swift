@@ -30,25 +30,38 @@ public enum API {
         return firstly {
             foo()
         }.then { fbuser in
-            Database.fetch(path: "users", fbuser.uid).then {
-                (fbuser.uid, $0.string(for: "name"))
+            Database.fetch(path: "users", fbuser.uid)
+        }.then { snapshot -> Void in
+            let ctime = snapshot.childSnapshot(forPath: "ctime")
+            if ctime.value == nil {
+                ctime.ref.setValue(Date().timeIntervalSince1970)
             }
-        }.then { uid, name -> Void in
-            if name != nil { return }
-            Database.database().reference().child("users").child(uid).setValue([
-                "ctime": Date().timeIntervalSince1970
-            ])
         }
     }
 
-    public static func signUp(email: String, password: String, fullName: String, completion: @escaping (Result<User>) -> Void) {
+    public static func signUp(email: String, password: String, fullName: String) -> Promise<User> {
+        func set(userFullName: String) {
+            guard let user = Auth.auth().currentUser else { return }
+
+            let rq = user.createProfileChangeRequest()
+            rq.displayName = userFullName
+            rq.commitChanges(completion: nil)
+
+            Database.database().reference().child("users").child(user.uid).child("name").setValue(userFullName)
+        }
+
         if let user = Auth.auth().currentUser {
-            link(user: user, email: email, password: password, completion: completion)
+            set(userFullName: fullName)  //FIXME strictly shouldn't do this unless `link` succeeds
             Database.database().reference().child("users").child(user.uid).updateChildValues([
                 "name": fullName
             ])
+            return link(user: user, email: email, password: password).then { user in
+                // we need to set the username for both the anonymous user and the new user
+                set(userFullName: fullName)
+                return Promise(value: user)
+            }
         } else {
-            firstly {
+            return firstly {
                 PromiseKit.wrap{ Auth.auth().createUser(withEmail: email, password: password, completion: $0) }
             }.then { user in
                 auth().then {
@@ -58,46 +71,61 @@ public enum API {
                 }
             }.then {
                 fetchCurrentUser()
-            }.then {
-                completion(.success($0))
-            }.catch {
-                completion(.failure($0))
             }
         }
     }
 
-    private static func link(user: FirebaseCommunity.User, email: String, password: String, completion: @escaping (Result<User>) -> Void) {
+    public static func signUp(email: String, password: String, fullName: String, completion: @escaping (Result<User>) -> Void) {
+        signUp(email: email, password: password, fullName: fullName).then {
+            completion(.success($0))
+        }.catch {
+            completion(.failure($0))
+        }
+    }
+
+    private static func link(user: FirebaseCommunity.User, email: String, password: String) -> Promise<User> {
         let creds = EmailAuthProvider.credential(withEmail: email, password: password)
-        user.link(with: creds, completion: { user, error in
-            if user != nil {
-                fetchCurrentUser().then {
-                    completion(.success($0))
-                }.catch {
-                    completion(.failure($0))
+
+        return Promise { (fulfill, reject) in
+            user.link(with: creds, completion: { user, error in
+                if user != nil {
+                    fetchCurrentUser().then{ fulfill($0) }.catch{ reject($0) }
+                } else if let error = error {
+                    reject(Error.signInFailed(underlyingError: error))
+                } else {
+                    reject(Error.signInFailed(underlyingError: PMKError.invalidCallingConvention))
                 }
-            } else if let error = error {
-                completion(.failure(Error.signInFailed(underlyingError: error)))
-            } else {
-                completion(.failure(Error.signInFailed(underlyingError: PMKError.invalidCallingConvention)))
-            }
-        })
+            })
+        }
+    }
+
+    private static func link(user: FirebaseCommunity.User, email: String, password: String, completion: @escaping (Result<User>) -> Void) {
+        link(user: user, email: email, password: password).then {
+            completion(.success($0))
+        }.catch {
+            completion(.failure($0))
+        }
+    }
+
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `signIn(email:password:completion:)` unless you intend to use Promises.
+    public static func signIn(email: String, password: String) -> Promise<User> {
+        //FIXME cannot link anonymous account this way, Firebase errors saying the account is already linked
+        // (referring to the email/pass account)
+        return firstly {
+            PromiseKit.wrap{ Auth.auth().signIn(withEmail: email, password: password, completion: $0) }
+        }.then { _ in
+            auth()
+        }.then {
+            fetchCurrentUser()
+        }
     }
 
     public static func signIn(email: String, password: String, completion: @escaping (Result<User>) -> Void) {
-        if let user = Auth.auth().currentUser {
-            link(user: user, email: email, password: password, completion: completion)
-        } else {
-            firstly {
-                PromiseKit.wrap{ Auth.auth().signIn(withEmail: email, password: password, completion: $0) }
-            }.then { _ in
-                auth()
-            }.then {
-                fetchCurrentUser()
-            }.then {
-                completion(.success($0))
-            }.catch {
-                completion(.failure($0))
-            }
+        signIn(email: email, password: password).then {
+            completion(.success($0))
+        }.catch {
+            completion(.failure($0))
         }
     }
 
@@ -109,11 +137,8 @@ public enum API {
             let reaper = Lifetime()
             reaper.ref = Database.database().reference().child("trips")
             reaper.observer = reaper.ref.observe(.value) { snapshot in
-                guard let foo = snapshot.value as? [String: [String: Any]] else {
-                    return completion(.failure(API.Error.noChildNodes))
-                }
                 firstly {
-                    when(resolved: foo.map{ Trip.make(key: $0, json: $1) })
+                    when(resolved: snapshot.children.map{ Trip.make(with: $0 as! DataSnapshot) })
                 }.then { results -> Void in
                     var trips: [Trip] = []
                     for case .fulfilled(let trip) in results { trips.append(trip) }
@@ -187,34 +212,27 @@ public enum API {
         let reaper = Lifetime()
         reaper.ref = Database.database().reference().child("trips").child(trip.key)
         reaper.observer = reaper.ref.observe(.value) { snapshot in
-            do {
-                guard let json = snapshot.value as? [String: Any] else { throw Error.noChildNode }
-                firstly {
-                    Trip.make(key: trip.key, json: json)
-                }.then {
-                    observer(.success($0))
-                }.catch {
-                    observer(.failure($0))
-                }
-            } catch {
-                observer(.failure(error))
+            firstly {
+                Trip.make(with: snapshot)
+            }.then {
+                observer(.success($0))
+            }.catch {
+                observer(.failure($0))
             }
         }
-
         sender.view.addSubview(reaper)
     }
 
-    /// claims the initial leg by the current user, so pickUp leg is UNCLAIMED
-    public static func createTrip(eventDescription desc: String, eventTime time: Date, eventLocation location: CLLocation?, completion: @escaping (Result<Trip>) -> Void) {
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `createTrip(eventDescription:eventTime:eventLocation:completion:)` unless you intend to use Promises.
+    public static func createTrip(eventDescription desc: String, eventTime time: Date, eventLocation location: CLLocation?) -> Promise<Trip> {
         guard !desc.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            return DispatchQueue.main.async {
-                completion(.failure(Error.emptyDescription))
-            }
+            return Promise(error: Error.emptyDescription)
         }
 
-        firstly {
+        return firstly {
             fetchCurrentUser()
-        }.then { user -> Void in
+        }.then { user -> Trip in
             guard let fbuser = Auth.auth().currentUser else {
                 throw Error.notAuthorized
             }
@@ -244,8 +262,14 @@ public enum API {
             eventRef.setValue(eventDict2)
 
             let event = Event(key: eventRef.key, description: desc, owner: user, time: time, endTime: nil, location: geohash)
-            let trip = Trip(key: tripRef.key, event: event, dropOff: Leg(driver: user), pickUp: nil, _children: [])
-            completion(.success(trip))
+            return Trip(key: tripRef.key, event: event, dropOff: Leg(driver: user), pickUp: nil, _children: [])
+        }
+    }
+
+    /// claims the initial leg by the current user, so pickUp leg is UNCLAIMED
+    public static func createTrip(eventDescription desc: String, eventTime time: Date, eventLocation location: CLLocation?, completion: @escaping (Result<Trip>) -> Void) {
+        createTrip(eventDescription: desc, eventTime: time, eventLocation: location).then {
+            completion(.success($0))
         }.catch {
             completion(.failure($0))
         }
@@ -265,6 +289,8 @@ public enum API {
         }
     }
 
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `fetchCurrentUser(completion:)` unless you intend to use Promises.
     public static func fetchCurrentUser() -> Promise<User> {
         return firstly {
             auth()
@@ -313,9 +339,21 @@ public enum API {
         }
     }
 
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `claimPickUp(trip:completion:)` unless you intend to use Promises.
+    public static func claimPickUp(trip: Trip) -> Promise<Void> {
+        return claim("pickUp", claim: true, trip: trip)
+    }
+
     /// if there is no error, completes with nil
     public static func claimPickUp(trip: Trip, completion: @escaping (Swift.Error?) -> Void) {
         claim("pickUp", claim: true, trip: trip, completion: completion)
+    }
+
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `claimDropOff(trip:completion:)` unless you intend to use Promises.
+    public static func claimDropOff(trip: Trip) -> Promise<Void> {
+        return claim("dropOff", claim: true, trip: trip)
     }
 
     /// if there is no error, completes with nil
@@ -323,9 +361,21 @@ public enum API {
         claim("dropOff", claim: true, trip: trip, completion: completion)
     }
 
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `unclaimPickUp(trip:completion:)` unless you intend to use Promises.
+    public static func unclaimPickUp(trip: Trip) -> Promise<Void> {
+        return claim("pickUp", claim: false, trip: trip)
+    }
+
     /// if there is no error, completes with nil
     public static func unclaimPickUp(trip: Trip, completion: @escaping (Swift.Error?) -> Void) {
         claim("pickUp", claim: false, trip: trip, completion: completion)
+    }
+
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `unclaimDropOff(trip:completion:)` unless you intend to use Promises.
+    public static func unclaimDropOff(trip: Trip) -> Promise<Void> {
+        return claim("dropOff", claim: false, trip: trip)
     }
 
     /// if there is no error, completes with nil
@@ -333,8 +383,8 @@ public enum API {
         claim("dropOff", claim: false, trip: trip, completion: completion)
     }
 
-    static func claim(_ key: String, claim: Bool, trip: Trip, completion: @escaping (Swift.Error?) -> Void) {
-        firstly {
+    static func claim(_ key: String, claim: Bool, trip: Trip) -> Promise<Void> {
+        return firstly {
             fetchCurrentUser()
         }.then { user -> Void in
             let ref = Database.database().reference().child("trips").child(trip.key).child(key)
@@ -345,6 +395,11 @@ public enum API {
             } else {
                 ref.removeValue()
             }
+        }
+    }
+
+    static func claim(_ key: String, claim cc: Bool, trip: Trip, completion: @escaping (Swift.Error?) -> Void) {
+        claim(key, claim: cc, trip: trip).then {
             completion(nil)
         }.catch {
             completion($0)
@@ -363,17 +418,12 @@ public enum API {
         Database.database().reference().child("trips").child(trip.key).removeValue()
     }
 
-    /// adds children to the logged in user
-    /// if a child already exists with that name, returns the existing child
-    public static func addChild(name: String, completion: @escaping (Result<Child>) -> Void) {
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `addChild(name:completion:)` unless you intend to use Promises.
+    public static func addChild(name: String) -> Promise<Child> {
+        guard name.chuzzled() != nil else { return Promise(error: Error.noChildName) }
 
-        guard name.chuzzled() != nil else {
-            return DispatchQueue.main.async {
-                completion(.failure(Error.noChildName))
-            }
-        }
-
-        firstly {
+        return firstly {
             fetchCurrentUser()
         }.then { user -> Child in
             if let child = user.children.first(where: { $0.name == name }) {
@@ -386,21 +436,17 @@ public enum API {
                 ])
                 return Child(key: ref1.key, name: name)
             }
-        }.then {
+        }
+    }
+
+    /// adds children to the logged in user
+    /// if a child already exists with that name, returns the existing child
+    public static func addChild(name: String, completion: @escaping (Result<Child>) -> Void) {
+        addChild(name: name).then {
             completion(.success($0))
         }.catch {
             completion(.failure($0))
         }
-    }
-
-    public static func set(userFullName: String) {
-        guard let user = Auth.auth().currentUser else { return }
-
-        let rq = user.createProfileChangeRequest()
-        rq.displayName = userFullName
-        rq.commitChanges(completion: nil)
-
-        Database.database().reference().child("users").child(user.uid).child("name").setValue(userFullName)
     }
 
     public static func set(endTime: Date, for event: Event) {
@@ -418,11 +464,27 @@ public enum API {
     }
 
     //TODO this will not scale
-    public static func search(forUsersWithName query: String, completion: @escaping (Result<[User]>) -> Void) {
-        firstly {
+    ///This is the `Promise` returning variant of this function.
+    ///Use the original `search(forUsersWithName:completion:)` unless you intend to use Promises.
+    public static func search(forUsersWithName query: String) -> Promise<[User]> {
+        let query = query.lowercased()
+        return firstly {
             Database.fetch(path: "users")
-        }.then(on: .global()) { users in
-            try users.array().filter {
+        }.then(on: .global()) { snapshot in
+            return snapshot.children.flatMap { snapshot in
+                do {
+                    let snapshot = snapshot as! DataSnapshot
+                    return User(
+                        key: snapshot.key,
+                        name: try snapshot.childSnapshot(forPath: "name").string(),
+                        _children: try snapshot.childSnapshot(forPath: "children").children.map { snapshot in
+                            let snapshot = snapshot as! DataSnapshot
+                            return Child(key: snapshot.key, name: try snapshot.string())
+                        })
+                } catch {
+                    return nil
+                }
+            }.filter {
                 guard let parts = $0.name?.lowercased().split(separator: " ") else {
                     return false
                 }
@@ -431,7 +493,11 @@ public enum API {
                 }}
                 return false
             }
-        }.then {
+        }
+    }
+
+    public static func search(forUsersWithName query: String, completion: @escaping (Result<[User]>) -> Void) {
+        search(forUsersWithName: query).then {
             completion(.success($0))
         }.catch {
             completion(.failure($0))
@@ -457,10 +523,12 @@ public enum API {
             let reaper = Lifetime()
             reaper.ref = Database.database().reference().child("users").child(user.key).child("friends")
             reaper.observer = reaper.ref.observe(.value) { snapshot in
-                do {
-                    observer(.success(try snapshot.array()))
-                } catch {
-                    observer(.failure(error))
+                when(fulfilled: snapshot.children.map {
+                    fetchUser(id: ($0 as! DataSnapshot).key)
+                }).then {
+                    observer(.success($0))
+                }.catch {
+                    observer(.failure($0))
                 }
             }
             sender.view.addSubview(reaper)

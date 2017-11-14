@@ -36,6 +36,8 @@ public extension String {
 }
 
 /// for automatically stopping observing
+//FIXME doesn't work unless we get students to do [unowned self]
+//TODO potentially swizzling instances of the VC for didMove(toParentController:) would work
 class Lifetime: UIView {
     var ref: DatabaseReference!
     var observer: DatabaseHandle!
