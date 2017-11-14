@@ -28,7 +28,7 @@ final class ScheduleViewController: UITableViewController {
 
         filterControl.addTarget(self, action: #selector(onFilterChanged), for: .valueChanged)
 
-        go()
+        API.fetchCurrentUser().then(execute: fetchLegs)
     }
 
     @objc func onAddFriend() {
@@ -44,26 +44,37 @@ final class ScheduleViewController: UITableViewController {
         addFriend.isHidden = filterControl.selectedSegmentIndex != 1
     }
 
-    private func go() {
-        API.observeMyTrips(sender: self) { (result) in
+    private func fetchLegs(for user: CarpoolKit.User) {
+        let updateLegs: ([ContextualLeg]) -> Void = { legs in
+            let refreshSection: Int
+
+            switch legs.first {
+            case .some(_, let trip) where trip.event.owner == user:
+                self.myLegs = legs
+                refreshSection = 0
+            case .some(_, _):
+                self.friendLegs = legs
+                refreshSection = 1
+            case .none:
+                //TODO: Let the user know they should create some trips or add some friends
+                refreshSection = -1
+            }
+
+            if self.filterControl.selectedSegmentIndex == refreshSection { self.tableView.reloadData() }
+        }
+
+        let refresh: (Result<[Trip]>) -> Void = { result in
             switch result {
             case .success(let trips):
-                self.myLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
-                if self.filterControl.selectedSegmentIndex == 0 { self.tableView.reloadData() }
+                let legs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
+                updateLegs(legs)
             case .failure(let error):
                 print(error)
             }
         }
 
-        API.observeTheTripsOfMyFriends(sender: self) { (result) in
-            switch result {
-            case .success(let trips):
-                self.friendLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
-                if self.filterControl.selectedSegmentIndex == 1 { self.tableView.reloadData() }
-            case .failure(let error):
-                print(error)
-            }
-        }
+        API.observeMyTrips(sender: self, observer: refresh)
+        API.observeTheTripsOfMyFriends(sender: self, observer: refresh)
     }
 
     private var onscreenLegs: [ContextualLeg] {
