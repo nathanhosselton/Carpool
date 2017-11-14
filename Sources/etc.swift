@@ -6,6 +6,16 @@ extension UIView {
     }
 }
 
+extension UIBarButtonItem {
+    var isHidden: Bool {
+        set {
+            isEnabled = !newValue
+            tintColor = isEnabled ? nil : .clear
+        }
+        get { return isEnabled && tintColor == nil }
+    }
+}
+
 extension UIViewController {
     func show(_ e: UserError) {
         let alert = UIAlertController(title: "Whoops", message: e.localizedDescription, preferredStyle: .alert)

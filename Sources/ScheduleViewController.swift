@@ -2,38 +2,49 @@ import UIKit
 import CarpoolKit
 
 final class ScheduleViewController: UITableViewController {
-    let filterControl = UISegmentedControl(.byhand, "My Trips", "All Trips")
+    private let filterControl = UISegmentedControl(.byhand, "My Trips", "Friend Trips")
 
     typealias ContextualLeg = (leg: Leg, trip: Trip)
 
     private var myLegs: [ContextualLeg] = []
-    private var allLegs: [ContextualLeg] = []
+    private var friendLegs: [ContextualLeg] = []
+
+    private var addFriend: UIBarButtonItem {
+        return navigationItem.leftBarButtonItem!
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "Schedule"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAdd))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add Friend", style: .plain, target: self, action: #selector(onAddFriend))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create Trip", style: .plain, target: self, action: #selector(onCreateTrip))
 
         tableView.register(Cell.self, forCellReuseIdentifier: Cell.reuseId)
         tableView.tableHeaderView = filterControl
+
+        addFriend.isEnabled = false
+        addFriend.tintColor = .clear
 
         filterControl.addTarget(self, action: #selector(onFilterChanged), for: .valueChanged)
 
         go()
     }
 
-    @objc func onAdd() {
+    @objc func onAddFriend() {
+        navigationController?.pushViewController(AddFriendViewController(), animated: true)
+    }
+
+    @objc func onCreateTrip() {
         navigationController?.pushViewController(CreateTripViewController(), animated: true)
     }
 
     @objc func onFilterChanged() {
         tableView.reloadData()
+        addFriend.isHidden = filterControl.selectedSegmentIndex != 1
     }
 
     private func go() {
-        //FIXME: Use PromiseKit.when
-
         API.observeMyTrips(sender: self) { (result) in
             switch result {
             case .success(let trips):
@@ -44,10 +55,10 @@ final class ScheduleViewController: UITableViewController {
             }
         }
 
-        API.observeTrips(sender: self) { result in
+        API.observeTheTripsOfMyFriends(sender: self) { (result) in
             switch result {
             case .success(let trips):
-                self.allLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
+                self.friendLegs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
                 if self.filterControl.selectedSegmentIndex == 1 { self.tableView.reloadData() }
             case .failure(let error):
                 print(error)
@@ -58,7 +69,7 @@ final class ScheduleViewController: UITableViewController {
     private var onscreenLegs: [ContextualLeg] {
         switch filterControl.selectedSegmentIndex {
         case 0: return myLegs
-        case 1: return allLegs
+        case 1: return friendLegs
         default: fatalError()
         }
     }
