@@ -85,9 +85,8 @@ final class ScheduleViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //FIXME:
-//        let eventDetailVC = TripDetailViewController(event: trips[indexPath.row].event, leg: leg)
-//        navigationController?.pushViewController(eventDetailVC, animated: true)
+        let tripDetailVC = TripDetailViewController(trip: onscreenTrips(for: indexPath.section)[indexPath.row])
+        navigationController?.pushViewController(tripDetailVC, animated: true)
     }
 
     private func onscreenTrips(for section: Int) -> [Trip] {
