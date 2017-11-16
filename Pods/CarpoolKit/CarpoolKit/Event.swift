@@ -1,3 +1,4 @@
+import FirebaseCommunity
 import CoreLocation
 import PromiseKit
 
@@ -7,10 +8,35 @@ public struct Event: Codable, Keyed {
     public private(set) var owner: User
     public let time: Date
     public let endTime: Date?
-    let location: String?
+    let geohash: String
 
     public var clLocation: CLLocation? {
-        return location.flatMap(Geohash.init(value:))?.location
+        return Geohash(value: geohash)?.location
+    }
+}
+
+public extension API {
+    static func set(endTime: Date, for event: Event, completion: @escaping (Swift.Error?) -> Void) {
+        guard endTime >= event.time else {
+            return DispatchQueue.main.async {
+                completion(API.Error.eventEndTimeMustBeGreaterThanStartTime)
+            }
+        }
+
+        let endTime = endTime.timeIntervalSince1970
+        Database.database().reference().child("events").child(event.key).child("endTime").setValue(endTime)
+
+        firstly {
+            Database.fetch(path: "events", event.key, "trips")
+        }.then { snapshot -> Void in
+            let ref = Database.database().reference().child("trips")
+            for key in snapshot.keys {
+                ref.child(key).child("event").child(event.key).child("endTime").setValue(endTime)
+            }
+            completion(nil)
+        }.catch {
+            completion($0)
+        }
     }
 }
 

@@ -36,9 +36,10 @@ public extension String {
 }
 
 /// for automatically stopping observing
-//FIXME doesn't work unless we get students to do [unowned self]
-//TODO potentially swizzling instances of the VC for didMove(toParentController:) would work
-class Lifetime: UIView {
+class Reaper: UIView {
+    //FIXME doesn't work unless we get students to do [unowned self]
+    //TODO potentially swizzling instances of the VC for didMove(toParentController:) would work
+
     var ref: DatabaseReference!
     var observer: DatabaseHandle!
 
@@ -46,3 +47,10 @@ class Lifetime: UIView {
         ref.removeObserver(withHandle: observer)
     }
 }
+
+public extension Comparable {
+    func clamped(to limits: Range<Self>) -> Self {
+        return min(max(self, limits.lowerBound), limits.upperBound)
+    }
+}
+
