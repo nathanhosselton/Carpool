@@ -379,7 +379,7 @@ public extension UITextField {
 
 public extension UIButton {
     /// - Note: If you set kerning at least once then you must use setAttributedTitle rather than setTitle from now on
-    convenience init(_: Namespacer, title: String = "", font: FontConvertible = UIFont(size: UIFont.buttonFontSize), titleColor fg: UIColor? = nil, backgroundColor bg: UIColor? = nil, corners: Shape = .rounded(.auto), kerning: CGFloat? = UIKerningDefault)
+    convenience init(_: Namespacer, title: String = "", font: FontConvertible = UIFont.systemFont(ofSize: UIFont.buttonFontSize), titleColor fg: UIColor? = nil, backgroundColor bg: UIColor? = nil, corners: Shape = .rounded(.auto), kerning: CGFloat? = UIKerningDefault)
     {
         if fg != nil || bg != nil {
             self.init(type: .custom)  // ensures iOS does less stuff with our choices, eg. dimming highlight states
