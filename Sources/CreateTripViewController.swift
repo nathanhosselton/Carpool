@@ -73,6 +73,7 @@ final class CreateTripViewController: UIViewController {
         destination.addTarget(self, action: #selector(onDestinationReturn), for: .editingDidEndOnExit)
 
         datePicker.minimumDate = Date()
+        datePicker.minuteInterval = 5
 
         confirm.addTarget(self, action: #selector(onConfirm), for: .touchUpInside)
 
