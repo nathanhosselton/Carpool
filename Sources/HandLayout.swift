@@ -35,6 +35,17 @@ public extension CGSize {
 }
 
 public extension UILabel {
+    //FIXME: Coupled to Carpool
+    //FIXME: Shouldn't use NSAttributedString
+    convenience init(_: Namespacer, _ text: String, _ alignment: NSTextAlignment = .left) {
+        self.init(.byhand, NSMutableAttributedString().normal(text), alignment)
+    }
+
+    convenience init(_: Namespacer, _ attrText: NSAttributedString, _ alignment: NSTextAlignment = .left) {
+        self.init(attrText)
+        textAlignment = alignment
+    }
+
     convenience init(_ attrstr: NSAttributedString?) {
         self.init(frame: .zero)
         if attrstr?.string.contains("\n") ?? false { numberOfLines = 0 }
@@ -681,16 +692,6 @@ public extension UIDevice {
 }
 
 public extension UILabel {
-    convenience init(_: Namespacer, _ text: String, _ alignment: NSTextAlignment = .left) {
-        self.init(.byhand, NSMutableAttributedString().normal(text), alignment)
-    }
-
-    convenience init(_: Namespacer, _ attrText: NSAttributedString, _ alignment: NSTextAlignment = .left) {
-        self.init(frame: .zero)
-        attributedText = attrText
-        textAlignment = alignment
-    }
-
     func size(forHeight newHeight: CGFloat) -> CGSize {
         fatalError()
     }
