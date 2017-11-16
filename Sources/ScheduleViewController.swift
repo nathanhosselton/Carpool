@@ -4,10 +4,8 @@ import CarpoolKit
 final class ScheduleViewController: UITableViewController {
     private let filterControl = UISegmentedControl(.byhand, "My Trips", "Friend Trips")
 
-    typealias ContextualLeg = (leg: Leg, trip: Trip)
-
-    private var myLegs: [ContextualLeg] = []
-    private var friendLegs: [ContextualLeg] = []
+    private var mySchedule: [API.TripCalendar.DailySchedule] = []
+    private var friendTrips: [Trip] = []
 
     private var addFriend: UIBarButtonItem {
         return navigationItem.leftBarButtonItem!
@@ -28,7 +26,7 @@ final class ScheduleViewController: UITableViewController {
 
         filterControl.addTarget(self, action: #selector(onFilterChanged), for: .valueChanged)
 
-        API.fetchCurrentUser().then(execute: fetchLegs)
+        fetchTrips()
     }
 
     @objc func onAddFriend() {
@@ -44,61 +42,60 @@ final class ScheduleViewController: UITableViewController {
         addFriend.isHidden = filterControl.selectedSegmentIndex != 1
     }
 
-    private func fetchLegs(for user: CarpoolKit.User) {
-        let updateLegs: ([ContextualLeg]) -> Void = { legs in
-            let refreshSection: Int
-
-            switch legs.first {
-            case .some(_, let trip) where trip.event.owner == user:
-                self.myLegs = legs
-                refreshSection = 0
-            case .some(_, _):
-                self.friendLegs = legs
-                refreshSection = 1
-            case .none:
-                //TODO: Let the user know they should create some trips or add some friends
-                refreshSection = -1
-            }
-
-            if self.filterControl.selectedSegmentIndex == refreshSection { self.tableView.reloadData() }
-        }
-
-        let refresh: (Result<[Trip]>) -> Void = { result in
+    private func fetchTrips() {
+        API.observeMyTripCalendar(sender: self) { (result) in
             switch result {
-            case .success(let trips):
-                let legs = trips.flatMap{ trip in [trip.dropOff, trip.pickUp].flatMap{ $0 }.map{ ($0, trip) } }
-                updateLegs(legs)
+            case .success(let calendar):
+                self.mySchedule = (0...6).map(calendar.dailySchedule)
+                if self.filterControl.selectedSegmentIndex == 0 { self.tableView.reloadData() }
             case .failure(let error):
                 print(error)
             }
         }
 
-        API.observeMyTrips(sender: self, observer: refresh)
-        API.observeTheTripsOfMyFriends(sender: self, observer: refresh)
-    }
-
-    private var onscreenLegs: [ContextualLeg] {
-        switch filterControl.selectedSegmentIndex {
-        case 0: return myLegs
-        case 1: return friendLegs
-        default: fatalError()
+        API.observeTheTripsOfMyFriends(sender: self) { result in
+            switch result {
+            case .success(let trips):
+                self.friendTrips = trips
+                if self.filterControl.selectedSegmentIndex == 1 { self.tableView.reloadData() }
+            case .failure(let error):
+                print(error)
+            }
         }
     }
 
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return filterControl.selectedSegmentIndex == 0 ? mySchedule.count : 1
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard filterControl.selectedSegmentIndex == 0 else { return "Upcoming trips from friends" }
+        let day = mySchedule[section]
+        return day.trips.isEmpty ? nil : day.prettyName
+    }
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return onscreenLegs.count
+        return onscreenTrips(for: section).count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Cell.reuseId, for: indexPath)
-        cell.textLabel?.attributedText = onscreenLegs[indexPath.row].trip.event.prettyDescription
+        cell.textLabel?.attributedText = onscreenTrips(for: indexPath.section)[indexPath.row].event.prettyDescription
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let (leg, trip) = onscreenLegs[indexPath.row]
-        let eventDetailVC = TripDetailViewController(event: trip.event, leg: leg)
-        navigationController?.pushViewController(eventDetailVC, animated: true)
+        //FIXME:
+//        let eventDetailVC = TripDetailViewController(event: trips[indexPath.row].event, leg: leg)
+//        navigationController?.pushViewController(eventDetailVC, animated: true)
+    }
+
+    private func onscreenTrips(for section: Int) -> [Trip] {
+        switch filterControl.selectedSegmentIndex {
+        case 0: return mySchedule[section].trips
+        case 1: return friendTrips
+        default: fatalError()
+        }
     }
 
 }
