@@ -89,6 +89,7 @@ final class TripDetailViewController: UIViewController {
         view.addSubview(stack)
 
         API.observe(trip: trip, sender: self) { result in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             guard case .success(let trip) = result else { return }
             self.trip = trip
         }
@@ -104,6 +105,8 @@ final class TripDetailViewController: UIViewController {
     @objc func onClaimDropOff(button: UIButton) {
         guard trip.canModifyDropoff else { return } //Shouldn't happen
 
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+
         if trip.dropOffIsClaimed {
             API.unclaimDropOff(trip: trip).catch(execute: show)
         } else {
@@ -113,6 +116,8 @@ final class TripDetailViewController: UIViewController {
 
     @objc func onClaimPickUp(button: UIButton) {
         guard trip.canModifyPickup else { return } //Shouldn't happen
+
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
 
         if trip.pickUpIsClaimed {
             API.unclaimPickUp(trip: trip).catch(execute: show)
