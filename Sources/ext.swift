@@ -104,7 +104,7 @@ extension UIBarButtonItem {
             isEnabled = !newValue
             tintColor = isEnabled ? nil : .clear
         }
-        get { return isEnabled && tintColor == nil }
+        get { return !isEnabled && tintColor == .clear }
     }
 }
 
